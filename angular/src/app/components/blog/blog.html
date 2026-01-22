@@ -1,0 +1,39 @@
+@if (!router.url.includes('favorites')) {
+    <app-add-post (postAdded)="getAll()"></app-add-post>
+}
+
+<div class="container mt-4">
+    <div class="d-flex justify-content-end mb-3">
+        <button class="btn btn-sm btn-outline-info" (click)="sortItemsByRating()">
+            <i class="fa fa-sort"></i> Sortuj według ocen ⭐
+        </button>
+    </div>
+    
+    <div class="row">
+        @for (item of (items$ | filter: filterText | paginate: currentPage : itemsPerPage); track item._id) {
+            
+            <div class="col-12 col-md-6 col-lg-4 mb-4">
+                <blog-item 
+                    [title]="item.title" 
+                    [text]="item.text" 
+                    [image]="item.image"
+                    [id]="item._id"> 
+                </blog-item>
+            </div>
+
+        } @empty {
+            <div class="col-12">
+                <div class="alert alert-warning" role="alert">
+                    Brak wyników lub brak postów w ulubionych.
+                </div>
+            </div>
+        }
+    </div>
+
+    <app-pagination
+        [totalItems]="(items$ | filter: filterText)?.length || 0"
+        [currentPage]="currentPage"
+        [itemsPerPage]="itemsPerPage"
+        (pageChange)="onPageChange($event)">
+    </app-pagination>
+</div>

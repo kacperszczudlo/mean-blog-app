@@ -1,0 +1,23 @@
+<div class="container">
+  
+  <app-search-bar (name)="getName($event)"></app-search-bar>
+  
+  <hr>
+
+  <div class="d-flex flex-wrap gap-2 mb-3">
+    <button class="btn btn-outline-primary" (click)="blogApp.getAll()">
+      <i class="fa fa-refresh"></i> Odśwież posty
+    </button>
+
+    <a routerLink="/favorites" class="btn btn-outline-danger">
+      <i class="fa fa-heart"></i> Moje ulubione
+    </a>
+
+    <button class="btn btn-dark" (click)="themeService.toggleTheme()">
+      {{ (themeService.darkMode$ | async) ? '☀️ Tryb Jasny' : '🌙 Tryb Ciemny' }}
+    </button>
+  </div>
+
+  <app-blog #blogApp [filterText]="filterText"></app-blog>
+
+</div>

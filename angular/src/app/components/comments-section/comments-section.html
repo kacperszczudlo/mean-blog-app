@@ -1,0 +1,16 @@
+<div class="mt-3 border-top pt-2">
+  <h6>Komentarze:</h6>
+  <ul class="list-group mb-3">
+    <li class="list-group-item" *ngFor="let c of comments">
+      {{ c.text }}
+    </li>
+    <li class="list-group-item text-muted" *ngIf="comments.length === 0">
+      Brak komentarzy.
+    </li>
+  </ul>
+
+  <div class="input-group">
+    <input type="text" class="form-control" placeholder="Napisz komentarz..." [(ngModel)]="commentText">
+    <button class="btn btn-primary" type="button" (click)="addComment()">Wyślij</button>
+  </div>
+</div>

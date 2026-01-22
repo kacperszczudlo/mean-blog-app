@@ -1,0 +1,25 @@
+/* You can add global styles to this file, and also import other style files */
+:root {
+  --bg-color: #ffffff;
+  --text-color: #333333;
+  --card-bg: #f8f9fa;
+}
+
+body.dark-mode {
+  --bg-color: #1a1a2e;
+  --text-color: #eaeaea;
+  --card-bg: #16213e;
+}
+
+body {
+  background-color: var(--bg-color);
+  color: var(--text-color);
+  transition: background-color 0.3s ease, color 0.3s ease;
+}
+
+// Jeśli używasz klas Bootstrapa .card, dodaj to:
+body.dark-mode .card {
+  background-color: var(--card-bg);
+  color: var(--text-color);
+  border-color: #0f3460;
+}

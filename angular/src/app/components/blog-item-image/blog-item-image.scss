@@ -1,0 +1,15 @@
+.post-image {
+  width: 100% !important;
+  height: 200px !important; /* Stała wysokość dla każdego zdjęcia */
+  object-fit: cover !important; /* Przytnij, nie rozciągaj */
+  object-position: center;
+  display: block;
+}
+
+// Dodatkowy kontener, żeby nic nie wystawało
+:host {
+  display: block;
+  height: 200px;
+  overflow: hidden;
+  background-color: #f0f0f0; /* Kolor tła, jeśli zdjęcie się nie załaduje */
+}

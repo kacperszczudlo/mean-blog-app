@@ -1,0 +1,32 @@
+import { Component } from '@angular/core';
+import { AuthService } from '../../services/auth.service';
+import { Router } from '@angular/router';
+import { FormsModule } from '@angular/forms';
+
+@Component({
+  selector: 'app-login',
+  standalone: true,
+  imports: [FormsModule],
+  templateUrl: './login.component.html',
+  styleUrls: ['./login.component.scss']
+})
+export class LoginComponent {
+  credentials = { login: '', password: '' };
+  loginError = false;
+
+  constructor(private authService: AuthService, private router: Router) {}
+
+  signin() {
+    this.loginError = false;
+    this.authService.authenticate(this.credentials).subscribe({
+      next: (result: any) => {
+        if (result) {
+          this.router.navigate(['/']); // Przekierowanie na Home po sukcesie [cite: 273]
+        } else {
+          this.loginError = true;
+        }
+      },
+      error: () => this.loginError = true
+    });
+  }
+}

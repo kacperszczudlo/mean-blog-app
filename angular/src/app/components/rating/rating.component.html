@@ -1,0 +1,19 @@
+<div class="rating-container">
+  <div class="stars">
+    @for (star of stars; track star) {
+      <i class="fa"
+         [ngClass]="{
+           'fa-star': showIcon(star),
+           'fa-star-o': !showIcon(star)
+         }"
+         (mouseenter)="onStarHover(star)"
+         (mouseleave)="onStarLeave()"
+         (click)="onStarClick(star)">
+      </i>
+    }
+  </div>
+  
+  <span class="stats">
+    {{ averageRating | number:'1.1-1' }} / 5 ({{ votesCount }} gł.)
+  </span>
+</div>

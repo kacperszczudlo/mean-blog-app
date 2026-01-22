@@ -1,0 +1,23 @@
+<div class="container mt-5 mb-5">
+  <h2 class="mb-4">Galeria Zdjęć</h2>
+  
+  <div class="row">
+    <div class="col-md-4 mb-4" *ngFor="let img of images">
+      <div class="card h-100 shadow-sm">
+        <img 
+          [src]="img" 
+          class="card-img-top gallery-thumbnail" 
+          alt="Gallery Image" 
+          (click)="openImage(img)"
+        >
+      </div>
+    </div>
+  </div>
+</div>
+
+<div *ngIf="selectedImage" class="modal-backdrop" (click)="closeImage()">
+  <div class="modal-content-wrapper">
+    <img [src]="selectedImage" class="full-image">
+    <button class="btn btn-light close-btn" (click)="closeImage()">Zamknij</button>
+  </div>
+</div>

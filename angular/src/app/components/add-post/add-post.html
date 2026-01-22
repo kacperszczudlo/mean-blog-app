@@ -1,0 +1,42 @@
+<div class="container mt-5">
+  <div class="card shadow">
+    <div class="card-header bg-success text-white">
+      <h3 class="mb-0">Dodaj nowy wpis na bloga</h3>
+    </div>
+    <div class="card-body bg-light">
+      <form autocomplete="off">
+        <div class="mb-3">
+          <label class="form-label fw-bold">Tytuł wpisu</label>
+          <input type="text" class="form-control" [(ngModel)]="newPost.title" name="title" placeholder="Wpisz przyciągający uwagę tytuł">
+        </div>
+
+        <div class="mb-3">
+          <label class="form-label fw-bold">Kategoria</label>
+          <select class="form-select" [(ngModel)]="newPost.category" name="category">
+            @for (cat of categories; track cat) {
+              <option [value]="cat">{{ cat }}</option>
+            }
+          </select>
+        </div>
+
+        <div class="mb-3">
+          <label class="form-label fw-bold">URL obrazka</label>
+          <input type="text" class="form-control" [(ngModel)]="newPost.image" name="image" placeholder="http://link-do-zdjecia.jpg">
+          <div class="form-text text-muted">Jeśli zostawisz puste, użyty zostanie obrazek domyślny.</div>
+        </div>
+
+        <div class="mb-3">
+          <label class="form-label fw-bold">Treść posta</label>
+          <textarea class="form-control" [(ngModel)]="newPost.text" name="text" rows="5" placeholder="Napisz coś ciekawego..."></textarea>
+        </div>
+
+        <div class="d-grid gap-2">
+          <button class="btn btn-success btn-lg" (click)="add()">
+            <i class="bi bi-send"></i> Opublikuj post
+          </button>
+          <a class="btn btn-outline-secondary" [routerLink]="['/blog']">Anuluj</a>
+        </div>
+      </form>
+    </div>
+  </div>
+</div>

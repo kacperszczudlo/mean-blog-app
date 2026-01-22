@@ -1,0 +1,25 @@
+<div class="card h-100 shadow-sm">
+  
+  <blog-item-image [image]="image"></blog-item-image>
+  
+  <div class="card-body">
+    <div class="favorite-icon" (click)="onToggleFavorite($event)" style="cursor: pointer; float: right;" title="Dodaj do ulubionych">
+      <i class="fa" 
+         [ngClass]="{
+           'fa-heart': favoritesService.isFavorite(id || ''), 
+           'fa-heart-o': !favoritesService.isFavorite(id || '')
+         }"
+         style="color: red; font-size: 1.2rem;">
+      </i>
+    </div>
+
+    <h5 class="card-title">{{ title }}</h5>
+
+    <blog-item-text [text]="text" [id]="id"></blog-item-text>
+  </div>
+
+  <div class="card-footer bg-transparent border-top-0">
+    <app-rating [postId]="id || ''"></app-rating>
+  </div>
+
+</div>
