@@ -1,8 +1,8 @@
 import { Component, Input, OnInit } from '@angular/core';
-// Importujemy z comments.ts (bez .service)
-import { CommentsService } from "../../services/comments";
 import { CommonModule } from "@angular/common";
 import { FormsModule } from "@angular/forms";
+import { DataService } from '../../services/data.service';
+import { AuthService } from '../../services/auth.service';
 
 @Component({
   selector: 'app-comments-section',
@@ -14,26 +14,38 @@ import { FormsModule } from "@angular/forms";
 })
 export class CommentsSectionComponent implements OnInit {
   @Input() postId?: string;
+  @Input() comments: any[] = [];
   commentText: string = '';
-  comments: any[] = [];
+  submitting = false;
 
-  constructor(private commentsService: CommentsService) {}
+  constructor(private dataService: DataService, private authService: AuthService) {}
 
-  ngOnInit() {
-    this.loadComments();
-  }
+  ngOnInit() {}
 
   addComment() {
-    if (this.postId && this.commentText.trim()) {
-      this.commentsService.addComment(this.postId, this.commentText);
-      this.commentText = '';
-      this.loadComments();
+    const currentUser = this.authService.currentUser;
+    if (!currentUser) {
+      alert('Zaloguj się, aby dodać komentarz');
+      return;
     }
-  }
+    if (!this.postId || !this.commentText.trim() || this.submitting) return;
 
-  loadComments() {
-    if (this.postId) {
-      this.comments = this.commentsService.getCommentsByPostId(this.postId);
-    }
+    this.submitting = true;
+    this.dataService
+      .addComment(this.postId, {
+        userId: currentUser.userId,
+        userName: currentUser.name,
+        text: this.commentText.trim()
+      })
+      .subscribe({
+        next: (updated: any) => {
+          this.comments = updated?.comments || [];
+          this.commentText = '';
+          this.submitting = false;
+        },
+        error: () => {
+          this.submitting = false;
+        }
+      });
   }
 }

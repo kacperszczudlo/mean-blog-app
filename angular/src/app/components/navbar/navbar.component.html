@@ -14,10 +14,17 @@
           <li class="nav-item">
             <a class="nav-link" [routerLink]="['/blog/add']">Dodaj post</a>
           </li>
+          <li class="nav-item">
+            <a class="nav-link" [routerLink]="['/favorites']">Ulubione</a>
+          </li>
+          <li class="nav-item">
+            <a class="nav-link" [routerLink]="['/profile']">Profil</a>
+          </li>
         }
       </ul>
 
       <div class="d-flex align-items-center">
+        <app-theme-toggle class="me-2"></app-theme-toggle>
         @if (!authService.isLoggedIn()) {
           <a class="btn btn-outline-light me-2" [routerLink]="['/login']">Login</a>
           <a class="btn btn-primary" [routerLink]="['/signup']">Sign Up</a>

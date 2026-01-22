@@ -1,23 +1,51 @@
-@if (!router.url.includes('favorites')) {
-    <app-add-post (postAdded)="getAll()"></app-add-post>
-}
-
 <div class="container mt-4">
-    <div class="d-flex justify-content-between mb-3">
-        <div>
-            <label class="me-2">Filtruj po kategorii:</label>
-            <select class="form-select form-select-sm d-inline-block w-auto" 
-                    [(ngModel)]="selectedCategory" 
-                    (change)="onCategoryChange(selectedCategory)">
-              <option value="all">Wszystkie</option>
-              @for (cat of categories.slice(1); track cat) {
-                <option [value]="cat">{{ cat }}</option>
-              }
-            </select>
+    <div class="card p-3 mb-3">
+        <div class="row g-2 align-items-end">
+            <div class="col-12 col-md-3">
+                <label class="form-label">Tytuł / treść</label>
+                <input class="form-control form-control-sm" [(ngModel)]="searchTitle" placeholder="Szukaj w treści...">
+            </div>
+            <div class="col-12 col-md-2">
+                <label class="form-label">Autor</label>
+                <input class="form-control form-control-sm" [(ngModel)]="searchAuthor" placeholder="Autor">
+            </div>
+            <div class="col-6 col-md-2">
+                <label class="form-label">Od</label>
+                <input type="date" class="form-control form-control-sm" [(ngModel)]="dateFrom">
+            </div>
+            <div class="col-6 col-md-2">
+                <label class="form-label">Do</label>
+                <input type="date" class="form-control form-control-sm" [(ngModel)]="dateTo">
+            </div>
+            <div class="col-12 col-md-3">
+                <label class="form-label">Sortowanie</label>
+                <select class="form-select form-select-sm" [(ngModel)]="sortBy" (change)="applyFilters()">
+                    <option value="newest">Najnowsze</option>
+                    <option value="oldest">Najstarsze</option>
+                    <option value="popular">Najpopularniejsze (lajki)</option>
+                    <option value="rating">Najwyżej oceniane</option>
+                </select>
+            </div>
         </div>
-        <button class="btn btn-sm btn-outline-info" (click)="sortItemsByRating()">
-            <i class="fa fa-sort"></i> Sortuj według ocen ⭐
-        </button>
+        <div class="d-flex flex-wrap gap-2 mt-3">
+            <div>
+                <label class="me-2">Kategoria:</label>
+                <select class="form-select form-select-sm d-inline-block w-auto" 
+                        [(ngModel)]="selectedCategory" 
+                        (change)="onCategoryChange(selectedCategory)">
+                  <option value="all">Wszystkie</option>
+                  @for (cat of categories.slice(1); track cat) {
+                    <option [value]="cat">{{ cat }}</option>
+                  }
+                </select>
+            </div>
+            <button class="btn btn-sm btn-primary" (click)="applyFilters()">
+                Zastosuj filtry
+            </button>
+            <button class="btn btn-sm btn-outline-info" (click)="sortItemsByRating()">
+                <i class="fa fa-sort"></i> Sortuj według ocen ⭐
+            </button>
+        </div>
     </div>
     
     <div class="row">
@@ -34,6 +62,9 @@
                     [category]="item.category"
                     [likes]="item.likes"
                     [likedBy]="item.likedBy"
+                    [comments]="item.comments"
+                    [averageRating]="item.averageRating"
+                    [ratingsCount]="item.ratingsCount"
                     [createdAt]="item.createdAt"
                     (postDeleted)="getAll()"
                     (postUpdated)="getAll()">

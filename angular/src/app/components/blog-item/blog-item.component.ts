@@ -34,6 +34,9 @@ export class BlogItemComponent {
   @Input() likedBy?: string[] = [];
   @Input() category?: string;
   @Input() createdAt?: Date;
+  @Input() comments: any[] = [];
+  @Input() averageRating: number = 0;
+  @Input() ratingsCount: number = 0;
   
   @Output() postDeleted = new EventEmitter<string>();
   @Output() postUpdated = new EventEmitter<void>();

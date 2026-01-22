@@ -1,34 +1,27 @@
 import { Component, Input, OnInit } from '@angular/core';
 import { CommonModule } from '@angular/common';
-import { RatingService } from '../../services/rating.service';
+import { DataService } from '../../services/data.service';
+import { AuthService } from '../../services/auth.service';
 
 @Component({
   selector: 'app-rating',
   standalone: true,
   imports: [CommonModule],
   templateUrl: './rating.component.html',
-  styleUrls: ['./rating.component.scss'] // Pamiętaj o stylu
+  styleUrls: ['./rating.component.scss']
 })
 export class RatingComponent implements OnInit {
   @Input() postId: string = '';
-  
+  @Input() averageRating: number = 0;
+  @Input() votesCount: number = 0;
+
   stars: number[] = [1, 2, 3, 4, 5];
   hoverRating: number = 0;
-  averageRating: number = 0;
-  votesCount: number = 0;
+  submitting = false;
 
-  constructor(private ratingService: RatingService) {}
+  constructor(private dataService: DataService, private authService: AuthService) {}
 
-  ngOnInit(): void {
-    this.updateStats();
-  }
-
-  updateStats() {
-    if (this.postId) {
-      this.averageRating = this.ratingService.getAverageRating(this.postId);
-      this.votesCount = this.ratingService.getPostRatings(this.postId).length;
-    }
-  }
+  ngOnInit(): void {}
 
   onStarHover(rating: number): void {
     this.hoverRating = rating;
@@ -39,16 +32,31 @@ export class RatingComponent implements OnInit {
   }
 
   onStarClick(rating: number): void {
-    if (this.postId) {
-      this.ratingService.addRating(this.postId, rating);
-      this.updateStats(); // Odśwież widok po zagłosowaniu
+    const currentUser = this.authService.currentUser;
+    if (!currentUser) {
+      alert('Musisz być zalogowany, aby oceniać posty');
+      return;
     }
+    if (!this.postId || this.submitting) return;
+
+    this.submitting = true;
+    this.dataService
+      .ratePost(this.postId, { userId: currentUser.userId, value: rating })
+      .subscribe({
+        next: (updated: any) => {
+          this.averageRating = updated?.averageRating || 0;
+          this.votesCount = updated?.ratingsCount || 0;
+          this.submitting = false;
+        },
+        error: () => {
+          this.submitting = false;
+        }
+      });
   }
   
-  // Pomocnicza funkcja do wyświetlania wypełnienia gwiazdek
   showIcon(star: number): boolean {
-    if (this.hoverRating >= star) return true; // Hover ma pierwszeństwo
-    if (this.hoverRating === 0 && this.averageRating >= star) return true; // Jeśli nie ma hover, pokaż średnią
+    if (this.hoverRating >= star) return true;
+    if (this.hoverRating === 0 && this.averageRating >= star) return true;
     return false;
   }
 }

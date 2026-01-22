@@ -1,21 +1,21 @@
 <section class="container mt-5">
   <h2>Rejestracja</h2>
-  <form autocomplete="off">
+  <form #form="ngForm" autocomplete="off" novalidate>
     <div class="mb-3">
       <label class="form-label">Email <span class="text-danger">*</span></label>
-      <input type="email" class="form-control" [(ngModel)]="credentials.email" name="email" placeholder="Wpisz email">
+      <input type="email" class="form-control" [(ngModel)]="credentials.email" name="email" required email placeholder="Wpisz email">
     </div>
 
     <div class="mb-3">
       <label class="form-label">Hasło <span class="text-danger">*</span></label>
-      <input type="password" class="form-control" [(ngModel)]="credentials.password" name="password" placeholder="Wpisz hasło (5-15 znaków)">
+      <input type="password" class="form-control" [(ngModel)]="credentials.password" name="password" required minlength="5" maxlength="15" placeholder="Wpisz hasło (5-15 znaków)">
     </div>
 
     <div class="mb-3">
       <label class="form-label">Imię <span class="text-danger">*</span></label>
-      <input type="text" class="form-control" [(ngModel)]="credentials.name" name="name" placeholder="Wpisz imię">
+      <input type="text" class="form-control" [(ngModel)]="credentials.name" name="name" required minlength="2" placeholder="Wpisz imię">
     </div>
 
-    <button (click)="create()" type="button" class="btn btn-primary">Sign Up</button>
+    <button (click)="create()" type="button" class="btn btn-primary" [disabled]="!form.valid">Sign Up</button>
   </form>
 </section>

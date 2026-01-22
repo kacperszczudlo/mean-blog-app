@@ -3,14 +3,12 @@ import { DataService } from "../../services/data.service";
 import { BlogItemComponent } from "../blog-item/blog-item.component";
 import { CommonModule } from "@angular/common";
 import { FormsModule } from "@angular/forms";
-import { AddPostComponent } from "../add-post/add-post";
 import { FilterTextPipe } from "../../pipes/filter-text.pipe"; 
 import { PaginatePipe } from "../../pipes/paginate.pipe";
 import { PaginationComponent } from "../pagination/pagination.component";
 // Nowe importy potrzebne do pełnej funkcjonalności
 import { ActivatedRoute, Router } from '@angular/router'; 
 import { FavoritesService } from '../../services/favorites.service';
-import { RatingService } from '../../services/rating.service';
 
 @Component({
   selector: 'app-blog', 
@@ -19,7 +17,6 @@ import { RatingService } from '../../services/rating.service';
     BlogItemComponent, 
     CommonModule,
     FormsModule,
-    AddPostComponent, 
     FilterTextPipe,
     PaginatePipe,       
     PaginationComponent 
@@ -37,6 +34,13 @@ export class BlogComponent implements OnInit {
   // --- ZMIENNE DO PAGINACJI ---
   public currentPage: number = 1;
   public itemsPerPage: number = 6;
+
+  // --- ZAAWANSOWANE WYSZUKIWANIE ---
+  public searchTitle: string = '';
+  public searchAuthor: string = '';
+  public dateFrom: string = '';
+  public dateTo: string = '';
+  public sortBy: string = 'newest';
   
   // --- FILTROWANIE PO KATEGORII ---
   public selectedCategory: string = 'all';
@@ -46,8 +50,7 @@ export class BlogComponent implements OnInit {
     private service: DataService,
     private route: ActivatedRoute,
     public router: Router,
-    private favoritesService: FavoritesService,
-    private ratingService: RatingService
+    private favoritesService: FavoritesService
   ) {}
 
   ngOnInit() {
@@ -58,22 +61,31 @@ export class BlogComponent implements OnInit {
       if (params['category']) {
         this.selectedCategory = params['category'];
       }
+      if (params['title']) this.searchTitle = params['title'];
+      if (params['author']) this.searchAuthor = params['author'];
+      if (params['startDate']) this.dateFrom = params['startDate'];
+      if (params['endDate']) this.dateTo = params['endDate'];
+      if (params['sort']) this.sortBy = params['sort'];
       this.getAll();
     });
   }
 
   getAll() {
-    this.service.getAll().subscribe(response => {
+    const query: any = {
+      title: this.searchTitle || this.filterText,
+      author: this.searchAuthor,
+      category: this.selectedCategory !== 'all' ? this.selectedCategory : undefined,
+      startDate: this.dateFrom || undefined,
+      endDate: this.dateTo || undefined,
+      sort: this.sortBy
+    };
+
+    this.service.getAll(query).subscribe(response => {
       let data = response as any[];
 
       if (this.router.url.includes('favorites')) {
         const favIds = this.favoritesService.getFavorites();
         data = data.filter(item => favIds.includes(item._id));
-      }
-
-      // Filtrowanie po kategorii
-      if (this.selectedCategory !== 'all') {
-        data = data.filter(item => item.category === this.selectedCategory);
       }
 
       this.items$ = data;
@@ -86,6 +98,24 @@ export class BlogComponent implements OnInit {
     this.router.navigate([], {
       relativeTo: this.route,
       queryParams: { category: category, page: 1 },
+      queryParamsHandling: 'merge'
+    });
+    this.getAll();
+  }
+
+  applyFilters() {
+    this.currentPage = 1;
+    this.router.navigate([], {
+      relativeTo: this.route,
+      queryParams: {
+        title: this.searchTitle || this.filterText || null,
+        author: this.searchAuthor || null,
+        category: this.selectedCategory !== 'all' ? this.selectedCategory : null,
+        startDate: this.dateFrom || null,
+        endDate: this.dateTo || null,
+        sort: this.sortBy || null,
+        page: 1
+      },
       queryParamsHandling: 'merge'
     });
     this.getAll();
@@ -105,17 +135,12 @@ export class BlogComponent implements OnInit {
 
   // --- POPRAWIONE SORTOWANIE ---
   sortItemsByRating() {
-    // 1. Tworzymy kopię tablicy za pomocą [...this.items$]
-    // Dzięki temu Angular wykryje zmianę i odświeży widok
     this.items$ = [...this.items$].sort((a, b) => {
-      const ratingA = this.ratingService.getAverageRating(a._id);
-      const ratingB = this.ratingService.getAverageRating(b._id);
-      
-      // Sortowanie malejące (od najwyższej oceny)
+      const ratingA = a.averageRating || 0;
+      const ratingB = b.averageRating || 0;
       return ratingB - ratingA;
     });
 
-    // Opcjonalnie: Wracamy na 1 stronę po posortowaniu, żeby użytkownik zobaczył najlepsze wyniki
     this.onPageChange(1); 
   }
 }

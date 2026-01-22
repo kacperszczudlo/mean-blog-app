@@ -1,0 +1,36 @@
+<div class="container py-4">
+  <h2 class="mb-3">Profil użytkownika</h2>
+
+  @if (loading) {
+    <div class="alert alert-info">Ładowanie profilu...</div>
+  } @else if (error) {
+    <div class="alert alert-danger">{{ error }}</div>
+  } @else {
+    <div class="card mb-4">
+      <div class="card-body">
+        <h5 class="card-title">{{ authService.currentUser?.name }}</h5>
+        <p class="mb-1">Email: {{ authService.currentUser?.email }}</p>
+        <p class="mb-0">Łącznie postów: {{ postsCount }}</p>
+      </div>
+    </div>
+
+    <div>
+      <h5 class="mb-2">Twoje posty</h5>
+      @if (userPosts.length === 0) {
+        <div class="alert alert-secondary">Brak postów.</div>
+      } @else {
+        <ul class="list-group">
+          @for (post of userPosts; track post._id) {
+            <li class="list-group-item d-flex justify-content-between align-items-center">
+              <div>
+                <strong>{{ post.title }}</strong>
+                <div class="small text-muted">{{ post.createdAt | date:'short' }}</div>
+              </div>
+              <a [routerLink]="['/blog/edit', post._id]" class="btn btn-sm btn-outline-primary">Edytuj</a>
+            </li>
+          }
+        </ul>
+      }
+    </div>
+  }
+</div>

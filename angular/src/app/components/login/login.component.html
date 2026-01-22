@@ -1,17 +1,17 @@
 <div class="container mt-5">
   <h2>Logowanie</h2>
-  <form autocomplete="off">
+  <form #form="ngForm" autocomplete="off" novalidate>
     <div class="mb-3">
       <label class="form-label">Email (Login)</label>
-      <input [(ngModel)]="credentials.login" type="text" class="form-control" name="login" placeholder="Wpisz email">
+      <input [(ngModel)]="credentials.login" type="email" class="form-control" name="login" required placeholder="Wpisz email">
     </div>
     <div class="mb-3">
       <label class="form-label">Hasło</label>
-      <input [(ngModel)]="credentials.password" type="password" class="form-control" name="password" placeholder="Hasło">
+      <input [(ngModel)]="credentials.password" type="password" class="form-control" name="password" required minlength="5" placeholder="Hasło">
     </div>
     @if (loginError) {
       <div class="alert alert-danger">Nieprawidłowy login lub hasło</div>
     }
-    <button (click)="signin()" class="btn btn-primary" type="button">Zaloguj</button>
+    <button (click)="signin()" class="btn btn-primary" type="button" [disabled]="!form.valid">Zaloguj</button>
   </form>
 </div>

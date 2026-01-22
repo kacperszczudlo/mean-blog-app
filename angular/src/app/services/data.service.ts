@@ -9,8 +9,8 @@ export class DataService {
 
   constructor(private http: HttpClient) {}
 
-  getAll() {
-    return this.http.get(this.url + '/posts');
+  getAll(params: Record<string, any> = {}) {
+    return this.http.get(this.url + '/posts', { params });
   }
 
   addPost(post: any) {
@@ -29,11 +29,23 @@ export class DataService {
     return this.http.get(this.url + '/posts/' + id);
   }
 
+  getByAuthor(authorId: string) {
+    return this.http.get(this.url + '/posts/author/' + authorId);
+  }
+
   likePost(id: string, userId: string) {
     return this.http.post(this.url + '/posts/' + id + '/like', { userId });
   }
 
   unlikePost(id: string, userId: string) {
     return this.http.post(this.url + '/posts/' + id + '/unlike', { userId });
+  }
+
+  addComment(id: string, comment: { userId: string; userName: string; text: string }) {
+    return this.http.post(this.url + '/posts/' + id + '/comments', comment);
+  }
+
+  ratePost(id: string, payload: { userId: string; value: number }) {
+    return this.http.post(this.url + '/posts/' + id + '/rate', payload);
   }
 }

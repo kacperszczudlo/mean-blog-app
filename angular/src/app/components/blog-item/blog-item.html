@@ -12,10 +12,10 @@
       <div class="favorite-icon" (click)="onToggleFavorite($event)" style="cursor: pointer;" title="Dodaj do ulubionych">
         <i class="fa" 
            [ngClass]="{
-             'fa-heart': favoritesService.isFavorite(id || ''), 
-             'fa-heart-o': !favoritesService.isFavorite(id || '')
+             'fa-bookmark': favoritesService.isFavorite(id || ''), 
+             'fa-bookmark-o': !favoritesService.isFavorite(id || '')
            }"
-           style="color: red; font-size: 1.2rem;">
+           style="color: #f0ad4e; font-size: 1.2rem;">
         </i>
       </div>
     </div>
@@ -39,7 +39,7 @@
       <button class="btn btn-sm" 
               [ngClass]="isLikedByUser() ? 'btn-danger' : 'btn-outline-danger'"
               (click)="onLike($event)">
-        <i class="fa fa-thumbs-up"></i> {{ likes || 0 }}
+        <i class="fa fa-heart"></i> {{ likes || 0 }}
       </button>
       
       @if (isAuthor()) {
@@ -56,7 +56,12 @@
         </div>
       }
     </div>
-    <app-rating [postId]="id || ''"></app-rating>
+    <app-rating 
+      [postId]="id || ''" 
+      [averageRating]="averageRating" 
+      [votesCount]="ratingsCount">
+    </app-rating>
+    <app-comments-section [postId]="id" [comments]="comments"></app-comments-section>
   </div>
 
 </div>
