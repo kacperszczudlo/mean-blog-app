@@ -21,6 +21,11 @@ export const routes: Routes = [
     canActivate: [authGuard] // Zabezpieczenie dodawania
   },
   {
+    path: 'blog/edit/:id',
+    loadComponent: () => import('./components/edit-post/edit-post.component').then(m => m.EditPostComponent),
+    canActivate: [authGuard]
+  },
+  {
     path: 'login',
     loadComponent: () => import('./components/login/login.component').then(m => m.LoginComponent)
   },

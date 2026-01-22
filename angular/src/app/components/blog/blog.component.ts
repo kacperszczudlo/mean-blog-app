@@ -2,6 +2,7 @@ import { Component, OnInit, Input } from '@angular/core';
 import { DataService } from "../../services/data.service";
 import { BlogItemComponent } from "../blog-item/blog-item.component";
 import { CommonModule } from "@angular/common";
+import { FormsModule } from "@angular/forms";
 import { AddPostComponent } from "../add-post/add-post";
 import { FilterTextPipe } from "../../pipes/filter-text.pipe"; 
 import { PaginatePipe } from "../../pipes/paginate.pipe";
@@ -16,7 +17,8 @@ import { RatingService } from '../../services/rating.service';
   standalone: true,
   imports: [
     BlogItemComponent, 
-    CommonModule, 
+    CommonModule,
+    FormsModule,
     AddPostComponent, 
     FilterTextPipe,
     PaginatePipe,       
@@ -30,25 +32,31 @@ export class BlogComponent implements OnInit {
   
   @Input() filterText: string = '';
 
-  public items$: any[] = []; // Zmieniamy na tablicę dla łatwiejszego filtrowania i sortowania
+  public items$: any[] = [];
 
   // --- ZMIENNE DO PAGINACJI ---
   public currentPage: number = 1;
   public itemsPerPage: number = 6;
+  
+  // --- FILTROWANIE PO KATEGORII ---
+  public selectedCategory: string = 'all';
+  public categories = ['all', 'General', 'Technology', 'Travel', 'Food', 'Lifestyle', 'Business', 'Health', 'Education'];
 
   constructor(
     private service: DataService,
-    private route: ActivatedRoute, // Do odczytu parametrów URL
-    public router: Router,         // Do zmiany parametrów URL
-    private favoritesService: FavoritesService, // Do obsługi widoku ulubionych
-    private ratingService: RatingService       // Do sortowania wg ocen
+    private route: ActivatedRoute,
+    public router: Router,
+    private favoritesService: FavoritesService,
+    private ratingService: RatingService
   ) {}
 
   ngOnInit() {
-    // 1. Odczytaj stronę z URL przy starcie (np. ?page=2)
     this.route.queryParams.subscribe(params => {
       if (params['page']) {
         this.currentPage = Number(params['page']);
+      }
+      if (params['category']) {
+        this.selectedCategory = params['category'];
       }
       this.getAll();
     });
@@ -58,14 +66,29 @@ export class BlogComponent implements OnInit {
     this.service.getAll().subscribe(response => {
       let data = response as any[];
 
-      // 2. Obsługa ścieżki /favorites - filtrujemy tylko ulubione
       if (this.router.url.includes('favorites')) {
         const favIds = this.favoritesService.getFavorites();
         data = data.filter(item => favIds.includes(item._id));
       }
 
+      // Filtrowanie po kategorii
+      if (this.selectedCategory !== 'all') {
+        data = data.filter(item => item.category === this.selectedCategory);
+      }
+
       this.items$ = data;
     });
+  }
+
+  onCategoryChange(category: string) {
+    this.selectedCategory = category;
+    this.currentPage = 1;
+    this.router.navigate([], {
+      relativeTo: this.route,
+      queryParams: { category: category, page: 1 },
+      queryParamsHandling: 'merge'
+    });
+    this.getAll();
   }
 
   // --- METODA DO ZMIANY STRONY Z ZAPISEM W URL ---

@@ -3,7 +3,18 @@
 }
 
 <div class="container mt-4">
-    <div class="d-flex justify-content-end mb-3">
+    <div class="d-flex justify-content-between mb-3">
+        <div>
+            <label class="me-2">Filtruj po kategorii:</label>
+            <select class="form-select form-select-sm d-inline-block w-auto" 
+                    [(ngModel)]="selectedCategory" 
+                    (change)="onCategoryChange(selectedCategory)">
+              <option value="all">Wszystkie</option>
+              @for (cat of categories.slice(1); track cat) {
+                <option [value]="cat">{{ cat }}</option>
+              }
+            </select>
+        </div>
         <button class="btn btn-sm btn-outline-info" (click)="sortItemsByRating()">
             <i class="fa fa-sort"></i> Sortuj według ocen ⭐
         </button>
@@ -17,7 +28,15 @@
                     [title]="item.title" 
                     [text]="item.text" 
                     [image]="item.image"
-                    [id]="item._id"> 
+                    [id]="item._id"
+                    [authorId]="item.authorId"
+                    [authorName]="item.authorName"
+                    [category]="item.category"
+                    [likes]="item.likes"
+                    [likedBy]="item.likedBy"
+                    [createdAt]="item.createdAt"
+                    (postDeleted)="getAll()"
+                    (postUpdated)="getAll()">
                 </blog-item>
             </div>
 

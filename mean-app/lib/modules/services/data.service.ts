@@ -43,6 +43,19 @@ class DataService {
     public async deleteAllPosts() {
         await PostModel.deleteMany({});
     }
+
+    public async updatePost(id: string, updateData: Partial<IPost>) {
+        try {
+            return await PostModel.findByIdAndUpdate(
+                id, 
+                updateData, 
+                { new: true, runValidators: true }
+            );
+        } catch (error) {
+            console.error('Update error:', error);
+            throw new Error('Wystąpił błąd podczas aktualizacji posta');
+        }
+    }
 }
 
 export default DataService;

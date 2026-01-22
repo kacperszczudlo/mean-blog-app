@@ -1,16 +1,20 @@
-import { Component, Input } from '@angular/core';
+import { Component, Input, Output, EventEmitter } from '@angular/core';
 import { CommonModule } from '@angular/common';
+import { RouterModule } from '@angular/router';
 import { BlogItemImageComponent } from "../blog-item-image/blog-item-image.component";
 import { BlogItemTextComponent } from "../blog-item-text/blog-item-text.component";
-import { CommentsSectionComponent } from "../comments-section/comments-section"; // Sprawdź czy ścieżka jest poprawna (czasem brakuje .component)
+import { CommentsSectionComponent } from "../comments-section/comments-section";
 import { FavoritesService } from '../../services/favorites.service';
 import { RatingComponent } from '../rating/rating.component';
+import { AuthService } from '../../services/auth.service';
+import { DataService } from '../../services/data.service';
 
 @Component({
-  selector: 'blog-item', // ZMIANA: Usunięto 'app-' zgodnie z instrukcją PDF (str. 8)
+  selector: 'blog-item',
   standalone: true,
   imports: [
     CommonModule, 
+    RouterModule,
     BlogItemImageComponent, 
     BlogItemTextComponent, 
     CommentsSectionComponent, 
@@ -24,13 +28,81 @@ export class BlogItemComponent {
   @Input() text?: string;
   @Input() title?: string;
   @Input() id?: string;
+  @Input() authorId?: string;
+  @Input() authorName?: string;
+  @Input() likes?: number = 0;
+  @Input() likedBy?: string[] = [];
+  @Input() category?: string;
+  @Input() createdAt?: Date;
+  
+  @Output() postDeleted = new EventEmitter<string>();
+  @Output() postUpdated = new EventEmitter<void>();
 
-  constructor(public favoritesService: FavoritesService) {}
+  constructor(
+    public favoritesService: FavoritesService,
+    public authService: AuthService,
+    private dataService: DataService
+  ) {}
+
+  isAuthor(): boolean {
+    const currentUser = this.authService.currentUser;
+    return currentUser && this.authorId === currentUser.userId;
+  }
+
+  isLikedByUser(): boolean {
+    const currentUser = this.authService.currentUser;
+    return currentUser && this.likedBy ? this.likedBy.includes(currentUser.userId) : false;
+  }
 
   onToggleFavorite(event: Event) {
     event.stopPropagation();
     if (this.id) { 
        this.favoritesService.toggleFavorite(this.id);
+    }
+  }
+
+  onDelete(event: Event) {
+    event.stopPropagation();
+    if (confirm('Czy na pewno chcesz usunąć ten post?')) {
+      if (this.id) {
+        this.dataService.deletePost(this.id).subscribe({
+          next: () => {
+            alert('Post został usunięty!');
+            this.postDeleted.emit(this.id);
+          },
+          error: (error) => {
+            console.error('Błąd usuwania:', error);
+            alert('Nie udało się usunąć posta');
+          }
+        });
+      }
+    }
+  }
+
+  onLike(event: Event) {
+    event.stopPropagation();
+    const currentUser = this.authService.currentUser;
+    if (!currentUser) {
+      alert('Musisz być zalogowany, aby polubić post');
+      return;
+    }
+
+    if (this.id) {
+      if (this.isLikedByUser()) {
+        this.dataService.unlikePost(this.id, currentUser.userId).subscribe({
+          next: () => {
+            this.postUpdated.emit();
+          },
+          error: (error) => console.error('Błąd:', error)
+        });
+      } else {
+        this.dataService.likePost(this.id, currentUser.userId).subscribe({
+          next: () => {
+            this.postUpdated.emit();
+          },
+          error: (error) => console.error('Błąd:', error)
+        });
+      }
     }
   }
 }

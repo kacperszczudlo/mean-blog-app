@@ -3,6 +3,12 @@ export interface IData {
     text: string;
     image: string;
     category?: string;
+    authorId?: string;
+    authorName?: string;
+    likes?: number;
+    likedBy?: string[];
+    createdAt?: Date;
+    updatedAt?: Date;
 }
 
 export interface IPost extends IData {

@@ -4,15 +4,35 @@
       <h3 class="mb-0">Dodaj nowy wpis na bloga</h3>
     </div>
     <div class="card-body bg-light">
-      <form autocomplete="off">
+      <form [formGroup]="postForm" autocomplete="off">
         <div class="mb-3">
-          <label class="form-label fw-bold">Tytuł wpisu</label>
-          <input type="text" class="form-control" [(ngModel)]="newPost.title" name="title" placeholder="Wpisz przyciągający uwagę tytuł">
+          <label class="form-label fw-bold">Tytuł wpisu <span class="text-danger">*</span></label>
+          <input type="text" 
+                 class="form-control" 
+                 [class.is-invalid]="submitted && f['title'].errors"
+                 [class.is-valid]="submitted && !f['title'].errors"
+                 formControlName="title" 
+                 placeholder="Wpisz przyciągający uwagę tytuł">
+          @if (submitted && f['title'].errors) {
+            <div class="invalid-feedback">
+              @if (f['title'].errors['required']) {
+                <div>Tytuł jest wymagany</div>
+              }
+              @if (f['title'].errors['minlength']) {
+                <div>Tytuł musi mieć min. 3 znaki</div>
+              }
+              @if (f['title'].errors['maxlength']) {
+                <div>Tytuł może mieć max. 100 znaków</div>
+              }
+            </div>
+          }
         </div>
 
         <div class="mb-3">
-          <label class="form-label fw-bold">Kategoria</label>
-          <select class="form-select" [(ngModel)]="newPost.category" name="category">
+          <label class="form-label fw-bold">Kategoria <span class="text-danger">*</span></label>
+          <select class="form-select" 
+                  [class.is-invalid]="submitted && f['category'].errors"
+                  formControlName="category">
             @for (cat of categories; track cat) {
               <option [value]="cat">{{ cat }}</option>
             }
@@ -20,18 +40,54 @@
         </div>
 
         <div class="mb-3">
-          <label class="form-label fw-bold">URL obrazka</label>
-          <input type="text" class="form-control" [(ngModel)]="newPost.image" name="image" placeholder="http://link-do-zdjecia.jpg">
-          <div class="form-text text-muted">Jeśli zostawisz puste, użyty zostanie obrazek domyślny.</div>
+          <label class="form-label fw-bold">URL obrazka <span class="text-danger">*</span></label>
+          <input type="text" 
+                 class="form-control" 
+                 [class.is-invalid]="submitted && f['image'].errors"
+                 [class.is-valid]="submitted && !f['image'].errors"
+                 formControlName="image" 
+                 placeholder="http://link-do-zdjecia.jpg">
+          @if (submitted && f['image'].errors) {
+            <div class="invalid-feedback">
+              @if (f['image'].errors['required']) {
+                <div>URL obrazka jest wymagany</div>
+              }
+              @if (f['image'].errors['pattern']) {
+                <div>URL musi zaczynać się od http:// lub https://</div>
+              }
+            </div>
+          }
+          <div class="form-text text-muted">Jeśli zostawisz domyślny, użyty zostanie obrazek placeholder.</div>
         </div>
 
         <div class="mb-3">
-          <label class="form-label fw-bold">Treść posta</label>
-          <textarea class="form-control" [(ngModel)]="newPost.text" name="text" rows="5" placeholder="Napisz coś ciekawego..."></textarea>
+          <label class="form-label fw-bold">Treść posta <span class="text-danger">*</span></label>
+          <textarea class="form-control" 
+                    [class.is-invalid]="submitted && f['text'].errors"
+                    [class.is-valid]="submitted && !f['text'].errors"
+                    formControlName="text" 
+                    rows="5" 
+                    placeholder="Napisz coś ciekawego..."></textarea>
+          @if (submitted && f['text'].errors) {
+            <div class="invalid-feedback">
+              @if (f['text'].errors['required']) {
+                <div>Treść jest wymagana</div>
+              }
+              @if (f['text'].errors['minlength']) {
+                <div>Treść musi mieć min. 10 znaków</div>
+              }
+              @if (f['text'].errors['maxlength']) {
+                <div>Treść może mieć max. 5000 znaków</div>
+              }
+            </div>
+          }
         </div>
 
         <div class="d-grid gap-2">
-          <button class="btn btn-success btn-lg" (click)="add()">
+          <button class="btn btn-success btn-lg" 
+                  (click)="add()" 
+                  type="button"
+                  [disabled]="submitted && postForm.invalid">
             <i class="bi bi-send"></i> Opublikuj post
           </button>
           <a class="btn btn-outline-secondary" [routerLink]="['/blog']">Anuluj</a>
