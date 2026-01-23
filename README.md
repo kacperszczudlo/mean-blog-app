@@ -30,10 +30,3 @@ npm start        # http://localhost:4200
 - Profil: dane użytkownika, data rejestracji, liczba i lista własnych postów, historia aktywności; edycja postów z profilu.
 - UI: responsywny layout (Bootstrap grid, navbar z hamburgerem), tryb jasny/ciemny.
 
-## Testy / build
-- Frontend: `cd angular && npm test`
-- Backend: `cd mean-app && npm test`
-- Build prod: `cd angular && npm run build`
-
-## Licencja
-Projekt edukacyjny (Web Application Technologies).
