@@ -50,8 +50,7 @@ export class EditPostComponent implements OnInit {
           this.router.navigate(['/blog']);
         }
       },
-      error: (error) => {
-        console.error('Błąd ładowania posta:', error);
+      error: () => {
         this.error = 'Nie udało się załadować posta';
         this.loading = false;
       }
@@ -76,8 +75,7 @@ export class EditPostComponent implements OnInit {
         alert('Post został zaktualizowany!');
         this.router.navigate(['/blog']);
       },
-      error: (error) => {
-        console.error('Błąd aktualizacji:', error);
+      error: () => {
         alert('Nie udało się zaktualizować posta');
       }
     });

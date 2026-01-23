@@ -12,13 +12,13 @@ export const routes: Routes = [
     canActivate: [authGuard]
   },
   {
-    path: 'blog/detail/:id', // Ścieżka do szczegółów posta 
+    path: 'blog/detail/:id',
     loadComponent: () => import('./components/blog-item-details/blog-item-details.component').then(m => m.BlogItemDetailsComponent)
   },
   {
-    path: 'blog/add', // Ścieżka do dodawania postów
+    path: 'blog/add',
     loadComponent: () => import('./components/add-post/add-post').then(m => m.AddPostComponent),
-    canActivate: [authGuard] // Zabezpieczenie dodawania
+    canActivate: [authGuard]
   },
   {
     path: 'blog/edit/:id',

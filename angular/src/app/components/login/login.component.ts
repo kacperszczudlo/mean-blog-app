@@ -21,7 +21,7 @@ export class LoginComponent {
     this.authService.authenticate(this.credentials).subscribe({
       next: (result: any) => {
         if (result) {
-          this.router.navigate(['/']); // Przekierowanie na Home po sukcesie [cite: 273]
+          this.router.navigate(['/']);
         } else {
           this.loginError = true;
         }

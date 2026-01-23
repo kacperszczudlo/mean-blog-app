@@ -11,15 +11,21 @@ import { ThemeToggleComponent } from '../theme-toggle/theme-toggle.component';
   styleUrl: './navbar.component.scss' // upewnij się, że rozszerzenie jest poprawne
 })
 export class NavbarComponent {
+  isCollapsed = true;
+
   constructor(
     public authService: AuthService, // public, aby HTML go widział 
     private router: Router
   ) {}
 
+  toggleNav() {
+    this.isCollapsed = !this.isCollapsed;
+  }
+
   signOut() {
   this.authService.logout().subscribe({
     next: () => {
-      this.router.navigate(['/']); // Przekierowanie na stronę główną po wylogowaniu [cite: 1542]
+      this.router.navigate(['/']);
     }
   });
 }

@@ -1,12 +1,12 @@
 import { Component, EventEmitter, OnInit, Output } from '@angular/core';
 import { FormsModule } from "@angular/forms";
-import { Router, ActivatedRoute } from '@angular/router'; // Import Routera
-import { TextFormatDirective } from '../../directives/text-format.directive'; // Import Dyrektywy
+import { Router, ActivatedRoute } from '@angular/router';
+import { TextFormatDirective } from '../../directives/text-format.directive';
 
 @Component({
   selector: 'app-search-bar',
   standalone: true,
-  imports: [FormsModule, TextFormatDirective], // Dodajemy dyrektywę do imports
+  imports: [FormsModule, TextFormatDirective],
   templateUrl: './search-bar.component.html',
   styleUrl: './search-bar.component.scss'
 })
@@ -18,10 +18,9 @@ export class SearchBarComponent implements OnInit {
   constructor(private router: Router, private route: ActivatedRoute) {}
 
   ngOnInit(): void {
-    // Sprawdzamy, czy w URL jest parametr 'name' (np. ?name=test)
     this.route.queryParams.subscribe(params => {
-      if (params['name']) {
-        this.filterText = params['name'];
+      if (params['q']) {
+        this.filterText = params['q'];
         this.name.emit(this.filterText);
       }
     });
@@ -30,7 +29,7 @@ export class SearchBarComponent implements OnInit {
   sendFilter() { 
     const value = this.filterText?.toLowerCase();
     this.router.navigate(['/blog'], { 
-      queryParams: { name: value, title: value } 
+      queryParams: { q: value } 
     }); 
     this.name.emit(this.filterText); 
   }

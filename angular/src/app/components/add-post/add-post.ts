@@ -1,4 +1,4 @@
-import { Component, EventEmitter, Output, OnInit } from '@angular/core'; 
+import { Component, OnInit } from '@angular/core'; 
 import { DataService } from "../../services/data.service";
 import { ReactiveFormsModule, FormBuilder, FormGroup, Validators } from "@angular/forms";
 import { CommonModule } from "@angular/common";
@@ -16,8 +16,6 @@ export class AddPostComponent implements OnInit {
   postForm!: FormGroup;
   categories = ['General', 'Technology', 'Travel', 'Food', 'Lifestyle', 'Business', 'Health', 'Education'];
   submitted = false;
-
-  @Output() postAdded = new EventEmitter<void>();
 
   constructor(
     private dataService: DataService, 
@@ -55,7 +53,6 @@ export class AddPostComponent implements OnInit {
 
     this.dataService.addPost(postData).subscribe({
       next: (response: any) => {
-        console.log('Post dodany pomyślnie:', response);
         this.postForm.reset({
           title: '',
           text: '',
@@ -63,11 +60,9 @@ export class AddPostComponent implements OnInit {
           category: 'General'
         });
         this.submitted = false;
-        this.postAdded.emit();
         this.router.navigate(['/blog']);
       },
-      error: (error: any) => {
-        console.error('Błąd podczas dodawania posta:', error);
+      error: () => {
         alert('Błąd serwera: Nie udało się opublikować posta.');
       }
     });

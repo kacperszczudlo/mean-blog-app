@@ -1,16 +1,19 @@
-/* You can add global styles to this file, and also import other style files */
 :root {
   --bg-color: #ffffff;
-  --text-color: #333333;
-  --card-bg: #f8f9fa;
+  --text-color: #212529;
+  --card-bg: #ffffff;
+  --card-border: #dee2e6;
   --muted-color: #6c757d;
+  --heading-color: #212529;
 }
 
 body.dark-mode {
-  --bg-color: #1a1a2e;
-  --text-color: #eaeaea;
-  --card-bg: #16213e;
-  --muted-color: #aeb8c4;
+  --bg-color: #1a1d23;
+  --text-color: #e4e6eb;
+  --card-bg: #242831;
+  --card-border: #3a3f4b;
+  --muted-color: #9ca3af;
+  --heading-color: #f0f2f5;
 }
 
 body {
@@ -19,19 +22,68 @@ body {
   transition: background-color 0.3s ease, color 0.3s ease;
 }
 
-body.dark-mode .card {
-  background-color: var(--card-bg);
-  color: var(--text-color);
-  border-color: #0f3460;
+body.dark-mode .card,
+body.dark-mode .bg-white {
+  background-color: var(--card-bg) !important;
+  color: var(--text-color) !important;
+  border-color: var(--card-border);
+}
+
+body.dark-mode .card-body {
+    background-color: var(--card-bg) !important;
+    color: var(--text-color) !important;
 }
 
 body.dark-mode .navbar {
-  background-color: #0f172a !important;
+  background-color: #16181d !important;
+  border-bottom: 1px solid var(--card-border);
 }
 
 body.dark-mode .list-group-item {
   background-color: var(--card-bg);
   color: var(--text-color);
+  border-color: var(--card-border);
+}
+
+body.dark-mode h1,
+body.dark-mode h2,
+body.dark-mode h3,
+body.dark-mode h4,
+body.dark-mode h5,
+body.dark-mode h6 {
+  color: var(--heading-color);
+}
+
+body.dark-mode input,
+body.dark-mode textarea,
+body.dark-mode select {
+  background-color: #2d3139;
+  color: var(--text-color);
+  border-color: var(--card-border);
+}
+
+body.dark-mode input::placeholder,
+body.dark-mode textarea::placeholder {
+  color: #8b8f98;
+}
+
+body.dark-mode input:focus,
+body.dark-mode textarea:focus,
+body.dark-mode select:focus {
+  background-color: #2d3139;
+  color: var(--text-color);
+  border-color: #198754;
+  box-shadow: 0 0 0 0.25rem rgba(25, 135, 84, 0.25);
+}
+
+body.dark-mode .btn-primary {
+  background-color: #198754;
+  border-color: #198754;
+}
+
+body.dark-mode .btn-primary:hover {
+  background-color: #157347;
+  border-color: #146c43;
 }
 
 .text-muted {

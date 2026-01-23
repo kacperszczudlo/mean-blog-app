@@ -6,7 +6,6 @@ import { FormsModule } from "@angular/forms";
 import { FilterTextPipe } from "../../pipes/filter-text.pipe"; 
 import { PaginatePipe } from "../../pipes/paginate.pipe";
 import { PaginationComponent } from "../pagination/pagination.component";
-// Nowe importy potrzebne do pełnej funkcjonalności
 import { ActivatedRoute, Router } from '@angular/router'; 
 import { FavoritesService } from '../../services/favorites.service';
 
@@ -30,20 +29,13 @@ export class BlogComponent implements OnInit {
   @Input() filterText: string = '';
 
   public items$: any[] = [];
-
-  // --- ZMIENNE DO PAGINACJI ---
   public currentPage: number = 1;
-  public itemsPerPage: number = 6;
-
-  // --- ZAAWANSOWANE WYSZUKIWANIE ---
-  public searchTitle: string = '';
-  public searchAuthor: string = '';
+  public itemsPerPage: number = 5;
+  public sortBy: string = 'newest';
+  public selectedCategory: string = 'all';
   public dateFrom: string = '';
   public dateTo: string = '';
-  public sortBy: string = 'newest';
-  
-  // --- FILTROWANIE PO KATEGORII ---
-  public selectedCategory: string = 'all';
+  public authorFilter: string = '';
   public categories = ['all', 'General', 'Technology', 'Travel', 'Food', 'Lifestyle', 'Business', 'Health', 'Education'];
 
   constructor(
@@ -61,24 +53,33 @@ export class BlogComponent implements OnInit {
       if (params['category']) {
         this.selectedCategory = params['category'];
       }
-      if (params['title']) this.searchTitle = params['title'];
-      if (params['author']) this.searchAuthor = params['author'];
-      if (params['startDate']) this.dateFrom = params['startDate'];
-      if (params['endDate']) this.dateTo = params['endDate'];
+      if (params['q']) {
+        this.filterText = params['q'];
+      }
+      if (params['author']) {
+        this.authorFilter = params['author'];
+      }
+      if (params['dateFrom']) this.dateFrom = params['dateFrom'];
+      if (params['dateTo']) this.dateTo = params['dateTo'];
       if (params['sort']) this.sortBy = params['sort'];
       this.getAll();
     });
   }
 
   getAll() {
-    const query: any = {
-      title: this.searchTitle || this.filterText,
-      author: this.searchAuthor,
-      category: this.selectedCategory !== 'all' ? this.selectedCategory : undefined,
-      startDate: this.dateFrom || undefined,
-      endDate: this.dateTo || undefined,
-      sort: this.sortBy
-    };
+    const query: any = {};
+    if (this.filterText && this.filterText.trim()) {
+      query.q = this.filterText.trim();
+    }
+    if (this.selectedCategory !== 'all') {
+      query.category = this.selectedCategory;
+    }
+    if (this.authorFilter && this.authorFilter.trim()) {
+      query.author = this.authorFilter.trim();
+    }
+    if (this.dateFrom) query.dateFrom = this.dateFrom;
+    if (this.dateTo) query.dateTo = this.dateTo;
+    query.sort = this.sortBy;
 
     this.service.getAll(query).subscribe(response => {
       let data = response as any[];
@@ -103,17 +104,29 @@ export class BlogComponent implements OnInit {
     this.getAll();
   }
 
-  applyFilters() {
+  onFilterChange() {
     this.currentPage = 1;
     this.router.navigate([], {
       relativeTo: this.route,
       queryParams: {
-        title: this.searchTitle || this.filterText || null,
-        author: this.searchAuthor || null,
-        category: this.selectedCategory !== 'all' ? this.selectedCategory : null,
-        startDate: this.dateFrom || null,
-        endDate: this.dateTo || null,
-        sort: this.sortBy || null,
+        q: this.filterText || null,
+        author: this.authorFilter || null,
+        dateFrom: this.dateFrom || null,
+        dateTo: this.dateTo || null,
+        page: 1
+      },
+      queryParamsHandling: 'merge'
+    });
+    this.getAll();
+  }
+
+  // --- POPRAWIONE SORTOWANIE PO OCENIE ---
+  applySorting() {
+    this.currentPage = 1;
+    this.router.navigate([], {
+      relativeTo: this.route,
+      queryParams: {
+        sort: this.sortBy,
         page: 1
       },
       queryParamsHandling: 'merge'
@@ -131,16 +144,5 @@ export class BlogComponent implements OnInit {
       queryParamsHandling: 'merge'
     });
     window.scrollTo({ top: 0, behavior: 'smooth' });
-  }
-
-  // --- POPRAWIONE SORTOWANIE ---
-  sortItemsByRating() {
-    this.items$ = [...this.items$].sort((a, b) => {
-      const ratingA = a.averageRating || 0;
-      const ratingB = b.averageRating || 0;
-      return ratingB - ratingA;
-    });
-
-    this.onPageChange(1); 
   }
 }

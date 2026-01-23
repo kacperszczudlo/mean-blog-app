@@ -4,7 +4,6 @@ import cors from 'cors';
 import { config } from './config';
 import Controller from './interfaces/controller.interface';
 import { loggerMiddleware } from './middlewares/log.middleware';
-// Upewnij się, że ta ścieżka do DataSchema jest poprawna w Twojej strukturze plików!
 import PostModel from './modules/schemas/data.schema'; 
 
 class App {
@@ -32,13 +31,9 @@ class App {
     private async connectToDatabase(): Promise<void> {
         try {
             await mongoose.connect(config.databaseUrl);
-            console.log('Connection with database established');
-            
-            // Tutaj uruchamiamy funkcję dodającą dane
             await this.populateDatabase();
 
         } catch (error) {
-            console.error('Error connecting to MongoDB:', error);
         }
         
         process.on('SIGINT', async () => {
@@ -51,12 +46,7 @@ class App {
         try {
             const count = await PostModel.countDocuments();
             
-            // ZMIANA TUTAJ:
-            // Jeśli postów jest 0 LUB 1 (ten Twój), to dodajemy resztę.
-            // Dzięki temu nie zdublujemy danych, gdy będzie ich już np. 5.
             if (count <= 1) {
-                console.log('Mało postów w bazie. Dodaję przykładowe dane...');
-                
                 const initialPosts = [
                     {
                         title: 'Malownicze Góry',
@@ -81,19 +71,13 @@ class App {
                 ];
 
                 await PostModel.insertMany(initialPosts);
-                console.log('Przykładowe dane zostały dodane!');
-            } else {
-                console.log('Baza jest już pełna, pomijam dodawanie.');
             }
         } catch (error) {
-            console.error('Błąd podczas seedowania bazy:', error);
         }
     }
     
     public listen(): void {
-        this.app.listen(config.port, () => {
-            console.log(`App listening on the port ${config.port}`);
-        });
+        this.app.listen(config.port);
     }
 }
 

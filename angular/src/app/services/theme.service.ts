@@ -18,7 +18,6 @@ export class ThemeService {
       if (saved !== null) {
         this.setDarkMode(saved === 'dark');
       } else {
-        // Detekcja preferencji systemowych użytkownika [cite: 214-218]
         const prefersDark = window.matchMedia('(prefers-color-scheme: dark)').matches;
         this.setDarkMode(prefersDark);
       }
@@ -33,7 +32,6 @@ export class ThemeService {
     this.darkMode.next(isDark);
     if (isPlatformBrowser(this.platformId)) {
       localStorage.setItem(this.THEME_KEY, isDark ? 'dark' : 'light');
-      // Dynamicznie dodajemy klasę do <body> [cite: 227, 245]
       if (isDark) {
         document.body.classList.add('dark-mode');
       } else {

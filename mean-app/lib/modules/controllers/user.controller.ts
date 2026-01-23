@@ -33,7 +33,6 @@ class UserController implements Controller {
       if (err.message === 'User already exists') {
         return res.status(409).json({ message: 'User already exists' });
       }
-      console.error('Create user error:', err);
       return res.status(500).json({ message: 'Server error' });
     }
   };
@@ -58,7 +57,6 @@ class UserController implements Controller {
 
       return res.status(200).json({ token });
     } catch (err) {
-      console.error('Auth error:', err);
       return res.status(500).json({ message: 'Server error' });
     }
   };

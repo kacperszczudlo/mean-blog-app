@@ -8,6 +8,7 @@ import { FavoritesService } from '../../services/favorites.service';
 import { RatingComponent } from '../rating/rating.component';
 import { AuthService } from '../../services/auth.service';
 import { DataService } from '../../services/data.service';
+import { HighlightPipe } from '../../pipes/highlight.pipe';
 
 @Component({
   selector: 'blog-item',
@@ -18,7 +19,8 @@ import { DataService } from '../../services/data.service';
     BlogItemImageComponent, 
     BlogItemTextComponent, 
     CommentsSectionComponent, 
-    RatingComponent
+    RatingComponent,
+    HighlightPipe
   ], 
   templateUrl: './blog-item.html',
   styleUrl: './blog-item.scss'
@@ -37,6 +39,7 @@ export class BlogItemComponent {
   @Input() comments: any[] = [];
   @Input() averageRating: number = 0;
   @Input() ratingsCount: number = 0;
+  @Input() highlightTerm: string = '';
   
   @Output() postDeleted = new EventEmitter<string>();
   @Output() postUpdated = new EventEmitter<void>();
@@ -73,8 +76,7 @@ export class BlogItemComponent {
             alert('Post został usunięty!');
             this.postDeleted.emit(this.id);
           },
-          error: (error) => {
-            console.error('Błąd usuwania:', error);
+          error: () => {
             alert('Nie udało się usunąć posta');
           }
         });
@@ -96,14 +98,14 @@ export class BlogItemComponent {
           next: () => {
             this.postUpdated.emit();
           },
-          error: (error) => console.error('Błąd:', error)
+          error: () => {}
         });
       } else {
         this.dataService.likePost(this.id, currentUser.userId).subscribe({
           next: () => {
             this.postUpdated.emit();
           },
-          error: (error) => console.error('Błąd:', error)
+          error: () => {}
         });
       }
     }

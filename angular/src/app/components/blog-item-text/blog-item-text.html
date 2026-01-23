@@ -1,6 +1,4 @@
-<p class="card-text">
-  {{ text | summary:35 }}
-</p>
+<p class="card-text" [innerHTML]="(text || '' | summary:120) | highlight: highlightTerm"></p>
 <a class="btn btn-primary" [routerLink]="['/blog/detail', id]">
   Więcej
 </a>

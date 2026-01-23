@@ -3,13 +3,32 @@ import { isPlatformBrowser } from '@angular/common';
 
 @Injectable({ providedIn: 'root' })
 export class FavoritesService {
-  private readonly STORAGE_KEY = 'blog_favorites';
+  private readonly STORAGE_KEY_PREFIX = 'blog_favorites_';
 
   constructor(@Inject(PLATFORM_ID) private platformId: Object) {}
 
+  private getUserId(): string {
+    if (isPlatformBrowser(this.platformId)) {
+      const token = localStorage.getItem('token');
+      if (token) {
+        try {
+          const payload = JSON.parse(atob(token.split('.')[1]));
+          return payload.userId || 'guest';
+        } catch {
+          return 'guest';
+        }
+      }
+    }
+    return 'guest';
+  }
+
+  private getStorageKey(): string {
+    return this.STORAGE_KEY_PREFIX + this.getUserId();
+  }
+
   getFavorites(): string[] {
     if (isPlatformBrowser(this.platformId)) {
-      const data = localStorage.getItem(this.STORAGE_KEY);
+      const data = localStorage.getItem(this.getStorageKey());
       return data ? JSON.parse(data) : [];
     }
     return [];
@@ -24,7 +43,7 @@ export class FavoritesService {
     } else {
       favorites.push(id);
     }
-    localStorage.setItem(this.STORAGE_KEY, JSON.stringify(favorites));
+    localStorage.setItem(this.getStorageKey(), JSON.stringify(favorites));
   }
 
   isFavorite(id: string): boolean {

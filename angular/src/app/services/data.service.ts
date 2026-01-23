@@ -33,6 +33,10 @@ export class DataService {
     return this.http.get(this.url + '/posts/author/' + authorId);
   }
 
+  getUserActivity(userId: string) {
+    return this.http.get(this.url + '/posts/activity/' + userId);
+  }
+
   likePost(id: string, userId: string) {
     return this.http.post(this.url + '/posts/' + id + '/like', { userId });
   }

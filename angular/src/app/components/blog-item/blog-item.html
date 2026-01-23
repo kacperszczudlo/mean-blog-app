@@ -20,7 +20,7 @@
       </div>
     </div>
 
-    <h5 class="card-title">{{ title }}</h5>
+    <h5 class="card-title" [innerHTML]="title || '' | highlight: highlightTerm"></h5>
 
     @if (authorName) {
       <p class="text-muted small mb-2">
@@ -31,7 +31,7 @@
       </p>
     }
 
-    <blog-item-text [text]="text" [id]="id"></blog-item-text>
+    <blog-item-text [text]="text" [id]="id" [highlightTerm]="highlightTerm"></blog-item-text>
   </div>
 
   <div class="card-footer bg-transparent border-top-0">

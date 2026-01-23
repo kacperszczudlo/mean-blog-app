@@ -8,7 +8,6 @@ import { AuthService } from '../../services/auth.service';
   selector: 'app-comments-section',
   standalone: true,
   imports: [CommonModule, FormsModule],
-  // Zakładam, że tutaj też masz krótkie nazwy html/scss wygenerowane przez CLI
   templateUrl: './comments-section.html',
   styleUrl: './comments-section.scss'
 })
@@ -17,6 +16,7 @@ export class CommentsSectionComponent implements OnInit {
   @Input() comments: any[] = [];
   commentText: string = '';
   submitting = false;
+  showAll: boolean = false;
 
   constructor(private dataService: DataService, private authService: AuthService) {}
 

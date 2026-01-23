@@ -17,7 +17,6 @@ export class AuthService {
 
   authenticate(credentials: any): Observable<any> {
     const localStorage = this.document.defaultView?.localStorage; 
-    // Spróbujmy: /api/login (zamiast /api/user/auth)
     return this.http.post<any>(`${this.url}/user/auth`, {
       login: credentials.login,
       password: credentials.password
@@ -34,6 +33,14 @@ export class AuthService {
 
   createOrUpdate(credentials: any) {
     return this.http.post(this.url + '/user/create', credentials);
+  }
+
+  getProfile(): Observable<any> {
+    const token = this.getToken();
+    if (!token) return of(null);
+    return this.http.get(`${this.url}/user/me`, {
+      headers: { Authorization: `Bearer ${token}` }
+    });
   }
 
   isLoggedIn(): boolean {

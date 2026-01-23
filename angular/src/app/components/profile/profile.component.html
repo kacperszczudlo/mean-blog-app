@@ -10,6 +10,7 @@
       <div class="card-body">
         <h5 class="card-title">{{ authService.currentUser?.name }}</h5>
         <p class="mb-1">Email: {{ authService.currentUser?.email }}</p>
+        <p class="mb-1" *ngIf="registrationDate">Data rejestracji: {{ registrationDate | date:'mediumDate' }}</p>
         <p class="mb-0">Łącznie postów: {{ postsCount }}</p>
       </div>
     </div>
@@ -27,6 +28,49 @@
                 <div class="small text-muted">{{ post.createdAt | date:'short' }}</div>
               </div>
               <a [routerLink]="['/blog/edit', post._id]" class="btn btn-sm btn-outline-primary">Edytuj</a>
+            </li>
+          }
+        </ul>
+      }
+    </div>
+
+    <div class="mt-4">
+      <h5 class="mb-2">Twoja aktywność</h5>
+      @if (activityLoading) {
+        <div class="alert alert-info">Ładowanie aktywności...</div>
+      } @else if (activityError) {
+        <div class="alert alert-danger">{{ activityError }}</div>
+      } @else if (activity.length === 0) {
+        <div class="alert alert-secondary">Brak aktywności.</div>
+      } @else {
+        <ul class="list-group">
+          @for (item of activity; track item.postId + item.type + item.createdAt) {
+            <li class="list-group-item">
+              <div class="d-flex justify-content-between align-items-start">
+                <div>
+                  <div class="d-flex align-items-center gap-2">
+                    <strong>{{ item.postTitle }}</strong>
+                    @if (item.type === 'comment') {
+                      <span class="badge text-bg-primary">Komentarz</span>
+                    } @else if (item.type === 'rating') {
+                      <span class="badge text-bg-warning">Ocena</span>
+                    } @else if (item.type === 'like') {
+                      <span class="badge text-bg-success">Polubienie</span>
+                    }
+                  </div>
+                  <div class="small text-muted">{{ item.createdAt | date:'short' }}</div>
+                  @if (item.text) {
+                    <div>{{ item.text }}</div>
+                  }
+                  @if (item.value) {
+                    <div>Ocena: {{ item.value }}/5</div>
+                  }
+                  @if (!item.text && !item.value && item.type === 'like') {
+                    <div>Polubiono post</div>
+                  }
+                </div>
+                <a [routerLink]="['/blog/detail', item.postId]" class="btn btn-sm btn-outline-secondary">Zobacz</a>
+              </div>
             </li>
           }
         </ul>

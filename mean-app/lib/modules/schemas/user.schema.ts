@@ -8,4 +8,8 @@ const UserSchema = new Schema<IUser>({
   role: { type: String, enum: ['user', 'admin'], default: 'user' }
 }, { timestamps: true });
 
-export default model<IUser>('User', UserSchema);
+const UserModel = model<IUser>('User', UserSchema);
+
+UserModel.collection.dropIndex('login_1').catch(() => {});
+
+export default UserModel;

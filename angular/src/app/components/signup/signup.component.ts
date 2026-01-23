@@ -23,14 +23,12 @@ export class SignupComponent {
   ) {}
 
   create() {
-    // Zmieniono 'register' na 'createOrUpdate' zgodnie z serwisem 
     this.authService.createOrUpdate(this.credentials).subscribe({
       next: () => {
         alert('Konto stworzone pomyślnie! Teraz możesz się zalogować.');
-        this.router.navigate(['/login']); // [cite: 349]
+        this.router.navigate(['/login']);
       },
-      error: (err: any) => { // Dodano typ : any, aby naprawić błąd TS7006 [cite: 351]
-        console.error('Błąd rejestracji:', err); // [cite: 352]
+      error: () => {
         alert('Wystąpił błąd podczas rejestracji.');
       }
     });
