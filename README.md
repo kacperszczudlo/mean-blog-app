@@ -35,9 +35,5 @@ npm start        # http://localhost:4200
 - Backend: `cd mean-app && npm test`
 - Build prod: `cd angular && npm run build`
 
-## Uwagi
-- Nie commituj sekretów ani danych dostępowych.
-- Jeśli port 3000 zajęty, zatrzymaj procesy node i uruchom backend ponownie.
-
 ## Licencja
 Projekt edukacyjny (Web Application Technologies).
