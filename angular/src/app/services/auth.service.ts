@@ -8,7 +8,7 @@ import { DOCUMENT } from '@angular/common';
   providedIn: 'root'
 })
 export class AuthService {
-  private url = 'http://localhost:3000/api';
+  private url = 'https://mean-blog-app-x0di.onrender.com/api';
 
   constructor(
     private http: HttpClient,

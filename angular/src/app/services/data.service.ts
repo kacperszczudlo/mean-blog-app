@@ -5,7 +5,7 @@ import { HttpClient } from '@angular/common/http';
   providedIn: 'root'
 })
 export class DataService {
-  private url = 'http://localhost:3000/api';
+  private url = 'https://mean-blog-app-x0di.onrender.com/api';
 
   constructor(private http: HttpClient) {}
 
