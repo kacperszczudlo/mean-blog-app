@@ -8,7 +8,7 @@
 
 Blog full-stack (MongoDB, Express, Angular, Node.js) z JWT, CRUD postów, komentarzami, lajkami, ocenami, ulubionymi, kategoriami, paginacją oraz trybem jasnym/ciemnym.
 
-## 🚀 Live Demo
+## Live Demo
 - **Frontend:** https://mean-blog-app.vercel.app
 - **Backend API:** https://mean-blog-app-x0di.onrender.com/api
 
